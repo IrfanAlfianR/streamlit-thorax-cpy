@@ -1,5 +1,9 @@
 streamlit
 pickle
+keras
+tensorflow
+sklearn
+matplotlib
 numpy==
 pandas==
 pip==
