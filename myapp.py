@@ -16,7 +16,8 @@ choose_model = st.sidebar.selectbox(
     "Pick model you'd like to use",
     ("Model 1 (VGG-19)",
      "Model 2 (Xception)", 
-     "Model 3 (VGG-16)")
+     "Model 3 (VGG-16)",
+     "Model 4 (CNN)")
      )
 
 # Display info about model and classes
@@ -41,12 +42,16 @@ else:
     # st.image(uploaded_file, use_container_width=True)
     # pred_button = st.button("Prediksi")
 
-    if pred_button:
-        # Load the selected model
-        if choose_model == "Model 1 (VGG-19)":
-            model = tf.keras.models.load_model('tb_vgg19_100_updt.h5')
-        elif choose_model == "Model 2 (Xception)":
-            model = tf.keras.models.load_model('tb_xception_100.h5')
+if pred_button:
+    # Load the selected model
+    if choose_model == "Model 1 (VGG-19)":
+        model = tf.keras.models.load_model('tb-vgg19.keras')
+    elif choose_model == "Model 2 (Xception)":
+        model = tf.keras.models.load_model('tb-exception.keras')
+    elif choose_model == "Model 3 (VGG-16)":
+        model = tf.keras.models.load_model('tb-vgg16.keras')
+    elif choose_model == "Model 4 (CNN)":
+        model = tf.keras.models.load_model('tb-cnn.keras')
 
 
         # Preprocess the image
@@ -57,16 +62,15 @@ else:
 
         # Make predictions
         prediction = model.predict(image_array)
-        # predicted_class = np.argmax(prediction, axis=1)
-        actual_prediction = (prediction > 0.5).astype(int)
+        predicted_class = np.argmax(prediction, axis=1)  # multi-class
 
-        if actual_prediction[0][0] == 0:
-            predicted_label = 'Normal'
-        else:
-            predicted_label = 'AKTIF'
-        # Display the result    
-        st.success(f"Hasil Prediksi: {predicted_label}") 
-        st.info(f"Confidence: {prediction[0][0]}")
-        st.write(f"image_array: {image_array}")
-        # st.write(f"Hasil Prediksi: {predicted_class[0]}")    
+        # Mapping class
+        class_labels = ['Normal', 'Laten', 'Aktif']  
+
+        predicted_label = class_labels[predicted_class[0]]
+
+        # Display the result
+        st.success(f"Hasil Prediksi: {predicted_label}")
+        st.info(f"Confidence: {np.max(prediction[0])}")
+ 
         st.balloons()
